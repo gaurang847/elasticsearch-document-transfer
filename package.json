@@ -1,0 +1,25 @@
+{
+  "name": "elasticsearch-document-transfer",
+  "version": "1.0.0",
+  "description": "Simple script to transfer documents between two elasticsearch servers or between indices on the same server.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/masquerade817/elasticsearch-document-transfer.git"
+  },
+  "keywords": [
+    "elasticsearch"
+  ],
+  "author": "Gaurang Pansare",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/masquerade817/elasticsearch-document-transfer/issues"
+  },
+  "homepage": "https://github.com/masquerade817/elasticsearch-document-transfer#readme",
+  "dependencies": {
+    "elasticsearch": "^15.3.0"
+  }
+}
