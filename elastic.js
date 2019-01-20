@@ -18,12 +18,14 @@ class Elastic{
     }
 
     async init(){
+        //configure source client
         this.sourceClient = new elasticsearch.Client({
             host: config.source.host,
             log: options.elasticsearch.log_level
         })
         await this._checkConnection(this.sourceClient, 'source');
 
+        //configure target client if required
         if(options.consume.byElastic){
             this.targetClient = new elasticsearch.Client({
                 host: config.target.host,
@@ -52,14 +54,14 @@ class Elastic{
                 }
             })
         }
-        //the rest 
+        //rest of the times
         else{
             results = await this.sourceClient.scroll({
                 scrollId: this._scroll_id,
                 scroll: options.elasticsearch.scroll_time
             })
         }
-        this.batchesDone++;
+        this.batches++;
         this._scroll_id = results._scroll_id;
 
         console.log('Batches done', this.batches);
