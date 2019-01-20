@@ -1,6 +1,8 @@
 # elasticsearch-document-transfer
 Simple Node.js script to transfer documents between two elasticsearch servers or between indices of the same elasticsearch server.
 
+Implementation based on [consumer-producer problem][3].  
+Since Node.js is single-threaded, `producer` and `consumer` cannot simultaneously access the `buffer`. And hence, as long as the asynchronous nature of Node.js is handled properly, there shouldn't be any issues related to concurrency.
 
 ### Usage:
 1. Clone the repo.
@@ -14,3 +16,4 @@ Simple Node.js script to transfer documents between two elasticsearch servers or
     
 [1]: /config-sample.js
 [2]: /options.js
+[3]: https://en.wikipedia.org/wiki/Producer–consumer_problem
