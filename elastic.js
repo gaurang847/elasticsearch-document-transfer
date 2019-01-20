@@ -114,7 +114,7 @@ class Elastic{
             index: config.source.index,
             type: config.source.type
         })
-        console.log("Mapping: ", mapping);
+        console.log("Mapping: ", JSON.stringify(mapping));
 
         if(!await target.indices.exists({index: config.target.index}))
             await target.indices.create({index: config.target.index});
