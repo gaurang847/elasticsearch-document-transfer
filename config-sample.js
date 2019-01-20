@@ -10,13 +10,14 @@ module.exports = Object.freeze({
 	},
 
 	//Target client: where documents are to be transferred to
-	//If 'host' field is present, it'll be assumed the target is an elasticsearch server
 	"target": {
 		"index": "my_target_index",
 		"type": "_doc",
 
+        //if options.consume.byFile is not set, this will be ignored
 		"filePath": "data.json",
 
+        //if options.consume.byElastic is not set, this will be ignored
 		"host": "localhost:9200",
 		"importMappingFromSource": true
 	}
