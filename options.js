@@ -1,4 +1,4 @@
-//Stuff you can play around with
+//Values you can play around with
 
 module.exports = Object.freeze({
     "elasticsearch": {

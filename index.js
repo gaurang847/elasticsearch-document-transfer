@@ -53,7 +53,7 @@ eventEmitter.on(EVENT_PRODUCE_READY, async () => {
         //till we don't overflow our buffer
         //we keep adding documents to it
         while(buffer.length < options.buffer_size){
-            response = await elastic.getFromRemoteElastic(options.produce.batch_size);
+            response = await elastic.getDocsFromSourceElastic(options.produce.batch_size);
             
             //once we stop getting new documents
             //we signal that we've reached End Of Scroll (EOS)
@@ -75,7 +75,10 @@ eventEmitter.on(EVENT_PRODUCE_READY, async () => {
 });
 
 (async function() {
-    await elastic.init();
-    eventEmitter.emit(EVENT_PRODUCE_READY);
-    eventEmitter.emit(EVENT_CONSUME_READY);
+    try{
+        await elastic.init();
+        eventEmitter.emit(EVENT_PRODUCE_READY);
+        eventEmitter.emit(EVENT_CONSUME_READY);
+    }
+    catch(err){console.error(err)}
 })();

@@ -34,7 +34,7 @@ class Elastic{
             await this._checkConnection(this.targetClient, 'target');
 
             if(config.target.importMappingFromSource){
-                this._transferMapping(this.sourceClient, this.targetClient);
+                await this._transferMapping(this.sourceClient, this.targetClient);
             }
         }
     }
@@ -75,11 +75,12 @@ class Elastic{
                 _type: config.target.type,
                 _id: ++this.target.doc_count.elastic
             }
-            return accumulator.concat([index, hit._source])
+            return accumulator.concat([{index}, hit._source])
         }, []);
 
+        //console.log(body);
         console.log('Elastic Doc Count', this.target.doc_count.elastic);
-        return localClient.bulk({body});
+        return this.targetClient.bulk({body});
     }
 
     async writeDocsToFile(rawHitsList){
@@ -89,7 +90,7 @@ class Elastic{
                 _type: config.target.type,
                 _id: ++this.target.doc_count.file
             }
-            return this._writeLineToFile(config.target.filePath, `${{index}}\n${hits._source}`);
+            return this._writeLineToFile(config.target.filePath, `${JSON.stringify({index})}\n${JSON.stringify(hits._source)}`);
         })
 
         console.log('File Doc Count', this.target.doc_count.file);
@@ -121,7 +122,7 @@ class Elastic{
         return await target.indices.putMapping({
             index: config.target.index,
             type: config.target.type,
-            body: mapping.search.mappings
+            body: mapping[config.source.index].mappings
         });
     }
 }

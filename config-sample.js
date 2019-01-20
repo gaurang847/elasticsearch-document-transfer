@@ -1,9 +1,9 @@
-//Stuff that will have consequences
+//Values that will have consequences
 
 module.exports = Object.freeze({
 	//Source client: from where the documents are to be fetched
 	"source": {
-		"host": "localhost",
+		"host": "localhost:9200",
 
 		"index": "my_source_index",
 		"type": "_doc"
