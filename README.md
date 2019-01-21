@@ -14,6 +14,12 @@ Since Node.js is single-threaded, `producer` and `consumer` cannot simultaneousl
     node index.js
     ```
     
+### Note:
+If [`options.consume.byFile`][2] is set to `true`, the documents will be written to a file in a format as expected by the [bulk API][4] of elasticsearch. The path of file must be specified in [`config.js`][1].
+
+If [`options.consume.byElastic`][2] is set to `true`, the documents will be directly added to the target elastic server. The connection details should be present in [`config.js`][1].
+    
 [1]: /config-sample.js
 [2]: /options.js
 [3]: https://en.wikipedia.org/wiki/Producer–consumer_problem
+[4]: https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html
