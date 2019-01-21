@@ -15,6 +15,14 @@ class Elastic{
         }
         this.batches = 0;
         this._scroll_id = null;
+
+        this._targetConfigCheckIf = property => flag => {
+            switch(flag){
+                case 'given': return !!config.target[property];
+                case 'same': return config.target[property] === config.source[property];
+                default: throw new Error(`Error with mapping: ${property}`);
+            }
+        }
     }
 
     async init(){
@@ -78,7 +86,6 @@ class Elastic{
             return accumulator.concat([{index}, hit._source])
         }, []);
 
-        //console.log(body);
         console.log('Elastic Doc Count', this.target.doc_count.elastic);
         return this.targetClient.bulk({body});
     }
@@ -110,11 +117,12 @@ class Elastic{
     }
 
     async _transferMapping(source, target){
-        let mapping = await source.indices.getMapping({
+        let sourceMapping = await source.indices.getMapping({
             index: config.source.index,
             type: config.source.type
         })
-        console.log("Mapping: ", JSON.stringify(mapping));
+
+        let mapping = this._buildMappingFrom(sourceMapping);
 
         if(!await target.indices.exists({index: config.target.index}))
             await target.indices.create({index: config.target.index});
@@ -122,8 +130,26 @@ class Elastic{
         return await target.indices.putMapping({
             index: config.target.index,
             type: config.target.type,
-            body: mapping[config.source.index].mappings
+            body: mapping
         });
+    }
+
+    //sourceMapping:
+    //{<index>: {"mappings": {<type>: {<the mapping>}}}}
+    //To return:
+    //{<type>: <mapping>}
+    _buildMappingFrom(sourceMapping){
+        let base = {};
+        let type = Object.assign({}, sourceMapping[config.source.index].mappings[config.source.type]);
+
+        //if target 'type' given in config is different from the type in source elastic, change it
+        if(this._targetConfigCheckIf('type')('given') && !this._targetConfigCheckIf('type')('same'))
+            base[config.target.type] = type;
+        else
+            base[config.source.type] = type;
+
+        //base = {<type>: <mapping>}
+        return base;
     }
 }
 
