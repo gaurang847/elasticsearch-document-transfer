@@ -25,7 +25,7 @@ class Elastic{
         })
         await this._checkConnection(this.sourceClient, 'source');
 
-        //configure target client if required
+        //configure target elastic client if required
         if(options.consume.byElastic){
             this.targetClient = new elasticsearch.Client({
                 host: config.target.host,
@@ -36,6 +36,11 @@ class Elastic{
             if(config.target.importMappingFromSource){
                 await this._transferMapping(this.sourceClient, this.targetClient);
             }
+        }
+
+        //configure target file if required
+        if(options.consume.byFile){
+            await this._mkdir(config.target.dirPath);
         }
     }
 
@@ -84,12 +89,13 @@ class Elastic{
 
     async writeDocsToFile(rawHitsList){
         let body = rawHitsList.map(hits => {
+            let path = config.target.dirPath + config.target.filePath;
             let index = {
                 _index: config.target.index,
                 _type: config.target.type,
                 _id: ++this.target.doc_count.file
             }
-            return this._writeLineToFile(config.target.filePath, `${JSON.stringify({index})}\n${JSON.stringify(hits._source)}`);
+            return this._writeLineToFile(path, `${JSON.stringify({index})}\n${JSON.stringify(hits._source)}`);
         })
 
         console.log('File Doc Count', this.target.doc_count.file);
@@ -105,6 +111,17 @@ class Elastic{
         line = line + '\n';
         return new Promise((resolve, reject) => {
             fs.appendFile(path, line, err => err? reject(err): resolve());
+        })
+    }
+
+    _mkdir(path){
+        return new Promise((resolve, reject) => {
+            fs.mkdir(path, err => {
+                //if any error other than 'directory already exists'
+                if (err && err.code != 'EEXIST')
+                    reject(err);
+                resolve();
+            })
         })
     }
 
