@@ -25,7 +25,7 @@ class Elastic{
         })
         await this._checkConnection(this.sourceClient, 'source');
 
-        //configure target client if required
+        //configure target elastic client if required
         if(options.consume.byElastic){
             this.targetClient = new elasticsearch.Client({
                 host: config.target.host,
@@ -36,6 +36,11 @@ class Elastic{
             if(config.target.importMappingFromSource){
                 await this._transferMapping(this.sourceClient, this.targetClient);
             }
+        }
+
+        //configure target file if required
+        if(options.consume.byFile){
+            await this._mkdir(config.target.dirPath);
         }
     }
 
@@ -78,19 +83,19 @@ class Elastic{
             return accumulator.concat([{index}, hit._source])
         }, []);
 
-        //console.log(body);
         console.log('Elastic Doc Count', this.target.doc_count.elastic);
         return this.targetClient.bulk({body});
     }
 
     async writeDocsToFile(rawHitsList){
         let body = rawHitsList.map(hits => {
+            let path = config.target.dirPath + config.target.filePath;
             let index = {
                 _index: config.target.index,
                 _type: config.target.type,
                 _id: ++this.target.doc_count.file
             }
-            return this._writeLineToFile(config.target.filePath, `${JSON.stringify({index})}\n${JSON.stringify(hits._source)}`);
+            return this._writeLineToFile(path, `${JSON.stringify({index})}\n${JSON.stringify(hits._source)}`);
         })
 
         console.log('File Doc Count', this.target.doc_count.file);
@@ -109,12 +114,24 @@ class Elastic{
         })
     }
 
+    _mkdir(path){
+        return new Promise((resolve, reject) => {
+            fs.mkdir(path, err => {
+                //if any error other than 'directory already exists'
+                if (err && err.code != 'EEXIST')
+                    reject(err);
+                resolve();
+            })
+        })
+    }
+
     async _transferMapping(source, target){
-        let mapping = await source.indices.getMapping({
+        let sourceMapping = await source.indices.getMapping({
             index: config.source.index,
             type: config.source.type
         })
-        console.log("Mapping: ", JSON.stringify(mapping));
+
+        let mapping = this._buildMappingFrom(sourceMapping);
 
         if(!await target.indices.exists({index: config.target.index}))
             await target.indices.create({index: config.target.index});
@@ -122,8 +139,34 @@ class Elastic{
         return await target.indices.putMapping({
             index: config.target.index,
             type: config.target.type,
-            body: mapping[config.source.index].mappings
+            body: mapping
         });
+    }
+
+    //sourceMapping:
+    //{<index>: {"mappings": {<type>: {<the mapping>}}}}
+    //To return:
+    //{<type>: <mapping>}
+    _buildMappingFrom(sourceMapping){
+        let base = {};
+        let type = Object.assign({}, sourceMapping[config.source.index].mappings[config.source.type]);
+
+        //if target 'type' given in config is different from the type in source elastic, change it
+        if(this._targetConfigCheckIf('type', 'given') && !this._targetConfigCheckIf('type', 'same'))
+            base[config.target.type] = type;
+        else
+            base[config.source.type] = type;
+
+        //base = {<type>: <mapping>}
+        return base;
+    }
+
+    _targetConfigCheckIf(property, flag){
+        switch(flag){
+            case 'given': return !!config.target[property];
+            case 'same': return config.target[property] === config.source[property];
+            default: throw new Error(`Error with mapping: ${property}`);
+        }
     }
 }
 

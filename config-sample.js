@@ -15,6 +15,7 @@ module.exports = Object.freeze({
 		"type": "_doc",
 
         //if options.consume.byFile is not set, this will be ignored
+		"dirPath": "output/",
 		"filePath": "data.json",
 
         //if options.consume.byElastic is not set, this will be ignored
