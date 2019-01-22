@@ -15,14 +15,6 @@ class Elastic{
         }
         this.batches = 0;
         this._scroll_id = null;
-
-        this._targetConfigCheckIf = property => flag => {
-            switch(flag){
-                case 'given': return !!config.target[property];
-                case 'same': return config.target[property] === config.source[property];
-                default: throw new Error(`Error with mapping: ${property}`);
-            }
-        }
     }
 
     async init(){
@@ -143,13 +135,21 @@ class Elastic{
         let type = Object.assign({}, sourceMapping[config.source.index].mappings[config.source.type]);
 
         //if target 'type' given in config is different from the type in source elastic, change it
-        if(this._targetConfigCheckIf('type')('given') && !this._targetConfigCheckIf('type')('same'))
+        if(this._targetConfigCheckIf('type', 'given') && !this._targetConfigCheckIf('type', 'same'))
             base[config.target.type] = type;
         else
             base[config.source.type] = type;
 
         //base = {<type>: <mapping>}
         return base;
+    }
+
+    _targetConfigCheckIf(property, flag){
+        switch(flag){
+            case 'given': return !!config.target[property];
+            case 'same': return config.target[property] === config.source[property];
+            default: throw new Error(`Error with mapping: ${property}`);
+        }
     }
 }
 
