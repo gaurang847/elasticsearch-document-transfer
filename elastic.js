@@ -33,18 +33,16 @@ class Elastic{
             })
             await this._checkConnection(this.targetClient, 'target');
 
-            if(config.target.importMappingFromSource){
+            if(config.target.importMappingFromSource)
                 await this._transferMapping(this.sourceClient, this.targetClient);
-            }
         }
 
         //configure target file if required
-        if(options.consume.byFile){
+        if(options.consume.byFile)
             await this._mkdir(config.target.dirPath);
-        }
     }
 
-    async getDocsFromSourceElastic({batchSize = 20, query = {match_all: {}}, scrollTime = '10s'}){
+    async getDocsFromSourceElastic(){
         let results;
 
         //the first time; when scroll_id isn't generated yet
@@ -54,8 +52,8 @@ class Elastic{
                 index: config.source.index,
                 type: config.source.type,
                 body: {
-                    size: batchSize,
-                    query: query
+                    size: options.produce.batch_size,
+                    query: options.elasticsearch.query
                 }
             })
         }
@@ -69,42 +67,56 @@ class Elastic{
         this.batches++;
         this._scroll_id = results._scroll_id;
 
-        console.log('Batches done', this.batches);
+        console.log('Batches produced: ', this.batches);
         return results
     }
 
     addDocsToTargetElastic(rawHitsList){
         let body = rawHitsList.reduce((accumulator, hit) => {
+            let docCount = this._getUpdatedDocCount('elastic');
+            
             let index = {
                 _index: config.target.index,
-                _type: config.target.type,
-                _id: ++this.target.doc_count.elastic
+                _type: config.target.type
             }
+            
+            if(config.target.useDocCountAsId)
+                index._id = docCount;
+
             return accumulator.concat([{index}, hit._source])
         }, []);
 
-        console.log('Elastic Doc Count', this.target.doc_count.elastic);
+        console.log('Docs transferred (elastic): ', this.target.doc_count.elastic);
         return this.targetClient.bulk({body});
     }
 
     async writeDocsToFile(rawHitsList){
         let body = rawHitsList.map(hits => {
             let path = config.target.dirPath + config.target.filePath;
+            let docCount = this._getUpdatedDocCount('file')
+            
             let index = {
                 _index: config.target.index,
-                _type: config.target.type,
-                _id: ++this.target.doc_count.file
+                _type: config.target.type
             }
+            
+            if(config.target.useDocCountAsId)
+                index._id = docCount;
+
             return this._writeLineToFile(path, `${JSON.stringify({index})}\n${JSON.stringify(hits._source)}`);
         })
 
-        console.log('File Doc Count', this.target.doc_count.file);
+        console.log('Docs transferred (file): ', this.target.doc_count.file);
         return Promise.all(body);     
     }
 
     async _checkConnection(client, clientName = ''){
         await client.ping({requestTimeout: 3000});
         console.log(`${clientName} client connected successfully`);
+    }
+
+    _getUpdatedDocCount(target_type){
+        return ++this.target.doc_count[target_type];
     }
 
     _writeLineToFile(path, line){

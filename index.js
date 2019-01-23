@@ -27,12 +27,12 @@ eventEmitter.on(EVENT_CONSUME_READY, async () => {
                 await elastic.addDocsToTargetElastic(batch);
         }
 
-        console.log('consumeSkip');
-
         //if buffer is depleted but we know more documents are on the way,
         //we wait for some time and continue when the buffer fills up
-        if(!EOS)
+        if(!EOS){
+            console.log('Consumption  temporarily paused');
             setTimeout(() => eventEmitter.emit(EVENT_CONSUME_READY), options.consume.timeout);
+        }
 
         //else, we just wind up our work with the rest of the buffer
         else{
@@ -53,7 +53,7 @@ eventEmitter.on(EVENT_PRODUCE_READY, async () => {
         //till we don't overflow our buffer
         //we keep adding documents to it
         while(buffer.length < options.buffer_size){
-            response = await elastic.getDocsFromSourceElastic(options.produce.batch_size);
+            response = await elastic.getDocsFromSourceElastic();
             
             //once we stop getting new documents
             //we signal that we've reached End Of Scroll (EOS)
@@ -67,9 +67,10 @@ eventEmitter.on(EVENT_PRODUCE_READY, async () => {
 
         //if we overflow the buffer
         //we wait some time and try again later
-        console.log('produceSkip');
-        if(!EOS)
+        if(!EOS){
+            console.log('Production temporarily paused');
             setTimeout(() => eventEmitter.emit(EVENT_PRODUCE_READY), options.produce.timeout);
+        }
     }
     catch(err){console.error(err)}
 });

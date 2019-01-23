@@ -14,6 +14,8 @@ module.exports = Object.freeze({
 		"index": "my_target_index",
 		"type": "_doc",
 
+		"useDocCountAsId": true,
+
         //if options.consume.byFile is not set, this will be ignored
 		"dirPath": "output/",
 		"filePath": "data.json",
