@@ -9,7 +9,8 @@ Since Node.js is single-threaded, `producer` and `consumer` cannot simultaneousl
 ### Usage:
 1. Clone the repo.
 2. Run `npm install` in the directory.
-3. Add `config.js` using [`config-sample.js`][1]. Exercise caution while setting source and target elastic hosts.
+3. Add `config.js` using [`config-sample.js`][1].  
+Exercise caution while setting source and target elastic hosts (and while editing this file in general).
 4. (Optional) Set appropriate values in [`options.js`][2]
 5. Run the script
     ```
