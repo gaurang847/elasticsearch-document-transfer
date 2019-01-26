@@ -1,5 +1,6 @@
 # elasticsearch-document-transfer
 [![npm version](https://badge.fury.io/js/elasticsearch-document-transfer.svg)](https://badge.fury.io/js/elasticsearch-document-transfer)
+[![](https://img.shields.io/twitter/url/https/github.com/masquerade817/elasticsearch-document-transfer.svg?style=social)](https://twitter.com/gaurang847)
 
 Simple Node.js script to transfer documents between two elasticsearch servers or between indices of the same elasticsearch server.
 
