@@ -7,13 +7,18 @@ Simple Node.js script to transfer documents between two elasticsearch servers or
 Implementation based on [consumer-producer problem][3].  
 Since Node.js is single-threaded, `producer` and `consumer` cannot simultaneously access the `buffer`. And hence, as long as the asynchronous nature of Node.js is handled properly, there shouldn't be any issues related to concurrency.
 
+### Prerequisite:
+Clone the repo and run following command in the installed directory:  
+`$ npm install`  
+OR  
+Simply open the desired directory in the terminal and run:  
+`$ npm install elasticsearch-document-transfer`
+
 ### Usage:
-1. Clone the repo.
-2. Run `npm install` in the directory.
-3. Add `config.js` using [`config-sample.js`][1].  
+1. Add `config.js` using [`config-sample.js`][1] as reference.  
 Exercise caution while setting source and target elastic hosts (and while editing this file in general).
-4. (Optional) Set appropriate values in [`options.js`][2]
-5. Run the script
+2. (Optional) Set appropriate values in [`options.js`][2]
+3. Run the script
     ```
     node index.js
     ```
