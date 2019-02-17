@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/masquerade817/elasticsearch-document-transfer#readme",
   "dependencies": {
-    "elasticsearch": "^15.3.0"
+    "elasticsearch": "^15.3.0",
+    "exceljs": "^1.7.0",
+    "lodash.get": "^4.4.2"
   }
 }

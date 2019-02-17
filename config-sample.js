@@ -22,6 +22,15 @@ module.exports = Object.freeze({
 
         //if options.consume.byElastic is not set, this will be ignored
 		"host": "localhost:9200",
-		"importMappingFromSource": true
+		"importMappingFromSource": true,
+
+		//if options.consume.byXLSX is not set, this will be ignored
+		"xlsxFilePath": "output/data.xlsx",
+		"rawHitToXlsxPaths": {
+			"id": "_id",
+			"customer_id": "_source.customer_id",
+			"email_id": "_source.email",
+			"product": "_source.products[0].product_id"
+		}
 	}
 })

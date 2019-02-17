@@ -1,5 +1,8 @@
 const elasticsearch = require('elasticsearch');
 const fs = require('fs');
+const xl = require('exceljs');
+const getByPath = require('lodash.get')
+
 
 const config = require('./config');
 const options = require('./options');
@@ -38,8 +41,16 @@ class Elastic{
         }
 
         //configure target file if required
-        if(options.consume.byFile)
+        if(options.consume.byFile || options.consume.byXlsx)
             await this._mkdir(config.target.dirPath);
+
+        if(options.consume.byXlsx){
+            this.xlWorkbook = new xl.stream.xlsx.WorkbookWriter({
+                stream: fs.createWriteStream(config.target.xlsxFilePath)
+            });
+            this.xlWorksheet = this.xlWorkbook.addWorksheet('Sheet 1');
+            this.xlWorksheet.columns = Object.keys(config.target.rawHitToXlsxPaths).map(path => ({header: path}));
+        }
     }
 
     async getDocsFromSourceElastic(){
@@ -108,6 +119,19 @@ class Elastic{
 
         console.log('Docs transferred (file): ', this.target.doc_count.file);
         return Promise.all(body);     
+    }
+
+    async writeDocsToXLSX(rawHitsList){
+        return rawHitsList.map(hit => {
+            let row = Object.values(config.target.rawHitToXlsxPaths)
+            .reduce((acc, path) => acc.concat([getByPath(hit, path)]), []);
+
+            return this.xlWorksheet.addRow(row).commit();
+        })
+    }
+
+    async commitWorkbook(){
+        this.xlWorkbook.commit();
     }
 
     async _checkConnection(client, clientName = ''){

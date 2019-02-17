@@ -18,7 +18,8 @@ module.exports = Object.freeze({
         "batch_size": 50,
         "timeout": 1000,                //in ms
 
-        "byFile": true,
-        "byElastic": true
+        "byFile": false,
+        "byElastic": false,
+        "byXlsx": true
     }
 })

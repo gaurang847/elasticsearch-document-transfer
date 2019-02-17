@@ -25,6 +25,9 @@ eventEmitter.on(EVENT_CONSUME_READY, async () => {
             
             if(options.consume.byElastic)
                 await elastic.addDocsToTargetElastic(batch);
+
+            if(options.consume.byXlsx)
+                await elastic.writeDocsToXLSX(batch);
         }
 
         //if buffer is depleted but we know more documents are on the way,
@@ -41,6 +44,11 @@ eventEmitter.on(EVENT_CONSUME_READY, async () => {
                 
             if(options.consume.byElastic)
                 await elastic.addDocsToTargetElastic(buffer);
+
+            if(options.consume.byXlsx){
+                await elastic.writeDocsToXLSX(buffer);
+                await elastic.commitWorkbook();
+            }
         }
     }
     catch(err){console.error(err)}

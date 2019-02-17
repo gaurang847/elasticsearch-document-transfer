@@ -22,6 +22,12 @@ Exercise caution while setting source and target elastic hosts (and while editin
     ```
     node index.js
     ```
+
+### Writing to XLSX file:
+If you want to aggregate your elasticsearch documents into an excel file, you can do that as well.  
+1. Set [`options.consume.byXlsx : true`][2]  
+2. Set the appropriate paths in [`config.target.rawHitToXlsxPaths`][1].  
+The keys in `rawHitToXlsxPaths` will be used as column headers.
     
 ### Note:
 If [`options.consume.byFile`][2] is set to `true`, the documents will be written to a file in a format as expected by the [bulk API][4] of elasticsearch. The path of file must be specified in [`config.js`][1].
