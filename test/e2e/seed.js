@@ -2,10 +2,10 @@
 
 /**
  * Helper script to seed Elasticsearch with test data and custom mappings.
- * Usage: node scripts/seed.js [nodeUrl] [indexName] [docCount]
+ * Usage: node test/e2e/seed.js [nodeUrl] [indexName] [docCount]
  */
 
-const { createClient, pingClient } = require('../lib/client/clientFactory');
+const { createClient, pingClient } = require('../../lib/client/clientFactory');
 
 const NODE_URL = process.argv[2] || 'http://localhost:9200';
 const INDEX_NAME = process.argv[3] || 'source_test_index';

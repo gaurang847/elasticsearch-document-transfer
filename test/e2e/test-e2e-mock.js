@@ -10,7 +10,7 @@ const assert = require('node:assert/strict');
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
-const { transfer } = require('../lib/transfer');
+const { transfer } = require('../../lib/transfer');
 
 const PORT = 9299;
 const HOST = '127.0.0.1';
@@ -166,7 +166,7 @@ const server = http.createServer((req, res) => {
 });
 
 async function runTest() {
-  const tmpBackupFile = path.join(__dirname, '../output/e2e_backup.ndjson.gz');
+  const tmpBackupFile = path.join(__dirname, 'tmp_e2e_backup.ndjson.gz');
 
   await new Promise(resolve => server.listen(PORT, HOST, resolve));
   console.log(`✓ Mock Elasticsearch server running at http://${HOST}:${PORT}`);

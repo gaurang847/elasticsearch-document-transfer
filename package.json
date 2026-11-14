@@ -7,11 +7,19 @@
     "elasticsearch-document-transfer": "bin/cli.js",
     "es-transfer": "bin/cli.js"
   },
+  "files": [
+    "bin/",
+    "lib/",
+    "index.js",
+    "elastic.js",
+    "config-sample.json",
+    "config-sample.js"
+  ],
   "scripts": {
     "start": "node index.js",
     "test": "node --test test/**/*.test.js",
-    "test:e2e": "node scripts/test-e2e-mock.js",
-    "seed": "node scripts/seed.js"
+    "test:e2e": "node test/e2e/test-e2e-mock.js",
+    "seed": "node test/e2e/seed.js"
   },
   "engines": {
     "node": ">=18.0.0"
