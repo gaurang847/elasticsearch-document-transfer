@@ -1,0 +1,28 @@
+{
+  "source": {
+    "node": "http://localhost:9200",
+    "type": "elasticsearch",
+    "index": "my_source_index",
+    "batchSize": 500,
+    "cursorMode": "scroll",
+    "scrollTime": "2m",
+    "query": {
+      "match_all": {}
+    }
+  },
+  "target": {
+    "elasticsearch": {
+      "enabled": true,
+      "node": "http://localhost:9200",
+      "type": "elasticsearch",
+      "index": "my_target_index",
+      "batchSize": 500,
+      "importMapping": true
+    },
+    "file": {
+      "enabled": true,
+      "filePath": "output/backup.ndjson.gz",
+      "format": "bulk"
+    }
+  }
+}

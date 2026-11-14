@@ -1,27 +1,76 @@
-//Values that will have consequences
+/**
+ * Sample configuration for elasticsearch-document-transfer
+ */
+module.exports = {
+  // Source configuration
+  source: {
+    // Cluster URL or array of URLs (can also use 'host')
+    node: 'http://localhost:9200',
 
-module.exports = Object.freeze({
-	//Source client: from where the documents are to be fetched
-	"source": {
-		"host": "localhost:9200",
+    // Client type: 'elasticsearch' (default) or 'opensearch'
+    type: 'elasticsearch',
 
-		"index": "my_source_index",
-		"type": "_doc"
-	},
+    // Source index name (required)
+    index: 'my_source_index',
 
-	//Target client: where documents are to be transferred to
-	"target": {
-		"index": "my_target_index",
-		"type": "_doc",
+    // Query DSL to filter documents (default: match_all)
+    query: {
+      match_all: {},
+    },
 
-		"useDocCountAsId": true,
+    // Batch size per scroll/search request
+    batchSize: 500,
 
-        //if options.consume.byFile is not set, this will be ignored
-		"dirPath": "output/",
-		"filePath": "data.json",
+    // Cursor pagination mode: 'scroll' (default) or 'search_after'
+    cursorMode: 'scroll',
+    scrollTime: '2m',
 
-        //if options.consume.byElastic is not set, this will be ignored
-		"host": "localhost:9200",
-		"importMappingFromSource": true
-	}
-})
+    // Optional authentication:
+    // auth: { apiKey: '...' }
+    // auth: { username: 'elastic', password: 'changeme' }
+
+    // Optional TLS options (e.g. self-signed certificates):
+    // tls: { rejectUnauthorized: false }
+  },
+
+  // Target destinations: you can enable Elasticsearch, File, or both!
+  target: {
+    // 1. Elasticsearch Target
+    elasticsearch: {
+      enabled: true,
+      node: 'http://localhost:9200',
+      type: 'elasticsearch',
+      index: 'my_target_index',
+      batchSize: 500,
+
+      // Automatically copy and adapt index mapping from source
+      importMapping: true,
+
+      // Set to true if you want sequential IDs (1, 2, 3...) instead of source document _id
+      useDocCountAsId: false,
+
+      // Optional authentication:
+      // auth: { apiKey: '...' }
+      // auth: { username: 'elastic', password: 'changeme' }
+    },
+
+    // 2. File Target (NDJSON / JSONL backup)
+    file: {
+      enabled: false,
+      // File path (adding .gz will automatically compress with gzip)
+      filePath: 'output/backup.ndjson.gz',
+      // Format: 'bulk' (Elasticsearch bulk format), 'source', or 'document'
+      format: 'bulk',
+    },
+  },
+
+  // Optional document transform / filter hook
+  transform: {
+    // Custom transform function: return modified doc, or null to filter out
+    // fn: (doc, count) => {
+    //   if (doc._source.deleted) return null; // skip deleted docs
+    //   doc._source.migratedAt = new Date().toISOString();
+    //   return doc;
+    // }
+  },
+};

@@ -1,17 +1,33 @@
 {
   "name": "elasticsearch-document-transfer",
-  "version": "1.0.2",
-  "description": "Simple script to transfer documents between two elasticsearch servers or between indices on the same server.",
+  "version": "2.0.0",
+  "description": "High-performance stream pipeline to transfer documents between Elasticsearch / OpenSearch instances or backup to NDJSON files.",
   "main": "index.js",
+  "bin": {
+    "elasticsearch-document-transfer": "bin/cli.js",
+    "es-transfer": "bin/cli.js"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "test": "node --test test/**/*.test.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/masquerade817/elasticsearch-document-transfer.git"
   },
   "keywords": [
-    "elasticsearch"
+    "elasticsearch",
+    "opensearch",
+    "transfer",
+    "reindex",
+    "migration",
+    "backup",
+    "ndjson",
+    "streams",
+    "bulk"
   ],
   "author": "Gaurang Pansare",
   "license": "ISC",
@@ -20,6 +36,7 @@
   },
   "homepage": "https://github.com/masquerade817/elasticsearch-document-transfer#readme",
   "dependencies": {
-    "elasticsearch": "^15.3.0"
+    "@elastic/elasticsearch": "^9.5.1",
+    "@opensearch-project/opensearch": "^3.10.0"
   }
 }
