@@ -9,7 +9,7 @@ const pkg = require('../package.json');
 /**
  * Merges CLI flags over file-based configuration.
  * @param {import('../lib/types').TransferConfig} baseConfig - Loaded configuration object
- * @param {import('../lib/types').ParsedCliFlags} cliFlags - Parsed CLI options from Commander
+ * @param {import('./cliOptions').ParsedCliFlags} cliFlags - Parsed CLI options from Commander
  * @returns {import('../lib/types').TransferConfig} Combined configuration
  */
 function mergeCliOverrides(baseConfig, cliFlags) {
