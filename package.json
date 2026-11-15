@@ -11,7 +11,6 @@
     "bin/",
     "lib/",
     "index.js",
-    "elastic.js",
     "config-sample.json",
     "config-sample.js"
   ],
