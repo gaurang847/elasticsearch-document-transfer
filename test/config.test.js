@@ -49,7 +49,20 @@ describe('Config Normalizer', () => {
         source: { node: 'http://localhost:9200', index: 'my_idx' },
         target: { elasticsearch: { enabled: false }, file: { enabled: false } },
       }),
-      /At least one target/
+      /Both targets are disabled/
+    );
+  });
+
+  test('throws error if both targets are explicitly disabled even with node/filePath provided', () => {
+    assert.throws(
+      () => normalizeConfig({
+        source: { node: 'http://localhost:9200', index: 'my_idx' },
+        target: {
+          elasticsearch: { enabled: false, node: 'http://localhost:9200' },
+          file: { enabled: false, filePath: 'out.ndjson' },
+        },
+      }),
+      /Both targets are disabled/
     );
   });
 

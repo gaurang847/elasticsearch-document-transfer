@@ -11,6 +11,7 @@
   "files": [
     "bin/",
     "lib/",
+    "docs/",
     "index.js",
     "index.d.ts",
     "config-sample.json",

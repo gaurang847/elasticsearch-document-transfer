@@ -46,9 +46,6 @@ module.exports = {
       // Automatically copy and adapt index mapping from source
       importMapping: true,
 
-      // Set to true if you want sequential IDs (1, 2, 3...) instead of source document _id
-      useDocCountAsId: false,
-
       // Optional authentication:
       // auth: { apiKey: '...' }
       // auth: { username: 'elastic', password: 'changeme' }

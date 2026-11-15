@@ -153,7 +153,7 @@ run();
 | `source.index` | `string` | *(required)* | Source index name |
 | `source.query` | `object` | `{ match_all: {} }` | Elasticsearch Query DSL filter |
 | `source.batchSize` | `number` | `500` | Hits per page |
-| `source.cursorMode` | `'scroll' \| 'search_after'` | `'scroll'` | Cursor pagination strategy |
+| `source.cursorMode` | `'scroll' \| 'search_after'` | `'scroll'` | Cursor pagination strategy (`'scroll'` or `'search_after'`) |
 | `source.scrollTime` | `string` | `'2m'` | Keep-alive timeout for scroll context |
 | `source.auth` | `object` | `undefined` | `{ apiKey }` or `{ username, password }` |
 | `source.tls` | `object` | `undefined` | `{ rejectUnauthorized: false, ca: '...' }` |
@@ -162,10 +162,30 @@ run();
 | `target.elasticsearch.index` | `string` | `source.index` | Target index name |
 | `target.elasticsearch.batchSize` | `number` | `500` | Bulk batch size |
 | `target.elasticsearch.importMapping`| `boolean` | `false` | Sync and sanitize mappings from source |
-| `target.elasticsearch.useDocCountAsId`| `boolean` | `false` | Replace `_id` with 1, 2, 3... (legacy option) |
 | `target.file.enabled` | `boolean` | `false` | Enable streaming to disk |
 | `target.file.filePath` | `string` | `'output/data.ndjson'` | Output file path (`.gz` triggers gzip) |
-| `target.file.format` | `'bulk' \| 'source' \| 'document'` | `'bulk'` | Format of lines in output file |
+| `target.file.format` | `'bulk' \| 'source' \| 'document'` | `'bulk'` | Output file format (`bulk`, `source`, `document`) |
+
+> 📖 **Full Configuration Guide:** See [docs/CONFIGURATION.md](file:///home/gaurang/projects/elasticsearch-document-transfer/docs/CONFIGURATION.md) for deep-dive explanations of all parameters and file formats.
+
+---
+
+## 💡 Rules of Thumb: Setting `batchSize` and `cursorMode`
+
+### Choosing `batchSize`
+* **Default (`500`):** Ideal baseline for standard documents (1KB–10KB).
+* **Decrease to `100`–`250`:** If documents contain large text blocks, nested objects, or base64 attachments (>50KB each). Prevents exceeding HTTP payload limits.
+* **Increase to `1,000`–`2,000`:** If documents are tiny (<1KB) and target cluster has high write capacity.
+* **Goal:** Aim for bulk payload batches between **5MB and 15MB** (Elasticsearch's recommended sweet spot).
+
+### Choosing `cursorMode`
+* **`scroll` (Recommended Universal Default):**
+  * Works reliably across **all** Elasticsearch versions (6.x, 7.x, 8.x, 9.x) and OpenSearch (1.x, 2.x).
+  * Automatically applies `_doc` sorting for optimal extraction throughput.
+  * Scroll contexts are automatically cleared (`clearScroll`) on completion to avoid memory leaks.
+* **`search_after`:**
+  * Uses stateless pagination sorted by `_shard_doc`.
+  * Recommended when cluster administrators restrict open scroll contexts on busy multi-tenant production clusters.
 
 ---
 

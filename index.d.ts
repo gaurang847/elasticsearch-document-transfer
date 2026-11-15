@@ -63,7 +63,6 @@ export interface TargetElasticsearchConfig {
   index?: string;
   batchSize?: number;
   importMapping?: boolean;
-  useDocCountAsId?: boolean;
   action?: 'index' | 'create' | 'update';
   maxRetries?: number;
   retryDelayMs?: number;

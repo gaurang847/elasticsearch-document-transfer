@@ -30,8 +30,8 @@ describe('DocumentTransformStream', () => {
     assert.equal(results[0].type, undefined);
   });
 
-  test('generates sequential ID if useDocCountAsId is true', async () => {
-    const stream = new DocumentTransformStream({ useDocCountAsId: true });
+  test('generates custom ID when customId function is provided', async () => {
+    const stream = new DocumentTransformStream({ customId: (hit, count) => `custom-${count}` });
     const results = [];
 
     stream.on('data', doc => results.push(doc));
@@ -43,8 +43,8 @@ describe('DocumentTransformStream', () => {
     await new Promise(resolve => stream.on('finish', resolve));
 
     assert.equal(results.length, 2);
-    assert.equal(results[0].id, '1');
-    assert.equal(results[1].id, '2');
+    assert.equal(results[0].id, 'custom-1');
+    assert.equal(results[1].id, 'custom-2');
   });
 
   test('supports custom transformer and document filtering', async () => {
