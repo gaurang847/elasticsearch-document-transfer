@@ -1,8 +1,10 @@
-const { transfer, MultiWritableStream } = require('./lib/transfer');
+const { transfer } = require('./lib/transfer');
+const { MultiWritableStream } = require('./lib/streams/MultiWritableStream');
 const { ElasticsearchSourceStream } = require('./lib/streams/ElasticsearchSourceStream');
 const { ElasticsearchTargetStream } = require('./lib/streams/ElasticsearchTargetStream');
 const { FileTargetStream } = require('./lib/streams/FileTargetStream');
 const { DocumentTransformStream } = require('./lib/streams/DocumentTransformStream');
+const { createPipeline } = require('./lib/pipeline/pipelineFactory');
 const { createClient, pingClient } = require('./lib/client/clientFactory');
 const { transferMapping, sanitizeMapping } = require('./lib/mapping/mappingManager');
 const { loadConfigFile, normalizeConfig } = require('./lib/config');
@@ -25,6 +27,7 @@ if (require.main === module) {
 
 module.exports = {
   transfer,
+  createPipeline,
   createClient,
   pingClient,
   transferMapping,

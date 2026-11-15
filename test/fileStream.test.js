@@ -1,17 +1,17 @@
 const { test, describe, afterEach } = require('node:test');
 const assert = require('node:assert/strict');
-const fs = require('fs');
-const path = require('path');
-const zlib = require('zlib');
+const { readFile, rm } = require('node:fs/promises');
+const path = require('node:path');
+const zlib = require('node:zlib');
 const { FileTargetStream } = require('../lib/streams/FileTargetStream');
 
-const TMP_DIR = path.join(__dirname, 'tmp');
+const TMP_DIR = path.join(__dirname, 'tmp_filestream');
 
 describe('FileTargetStream', () => {
-  afterEach(() => {
-    if (fs.existsSync(TMP_DIR)) {
-      fs.rmSync(TMP_DIR, { recursive: true, force: true });
-    }
+  afterEach(async () => {
+    try {
+      await rm(TMP_DIR, { recursive: true, force: true });
+    } catch {}
   });
 
   test('writes bulk formatted NDJSON', async () => {
@@ -24,8 +24,7 @@ describe('FileTargetStream', () => {
 
     await new Promise(resolve => stream.on('finish', resolve));
 
-    assert.ok(fs.existsSync(filePath));
-    const content = fs.readFileSync(filePath, 'utf-8');
+    const content = await readFile(filePath, 'utf-8');
     const lines = content.trim().split('\n');
 
     assert.equal(lines.length, 4);
@@ -45,8 +44,7 @@ describe('FileTargetStream', () => {
 
     await new Promise(resolve => stream.on('finish', resolve));
 
-    assert.ok(fs.existsSync(filePath));
-    const rawGz = fs.readFileSync(filePath);
+    const rawGz = await readFile(filePath);
     const decompressed = zlib.gunzipSync(rawGz).toString('utf-8');
     const lines = decompressed.trim().split('\n');
 

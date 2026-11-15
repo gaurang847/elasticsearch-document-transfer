@@ -7,7 +7,7 @@
 
 const http = require('http');
 const assert = require('node:assert/strict');
-const fs = require('fs');
+const { readFile, unlink } = require('node:fs/promises');
 const path = require('path');
 const zlib = require('zlib');
 const { transfer } = require('../../lib/transfer');
@@ -200,8 +200,8 @@ async function runTest() {
     assert.equal(targetDocs.size, DOC_COUNT, `Target cluster expected ${DOC_COUNT} docs`);
 
     // Verify backup file exists and is valid gzip
-    assert.ok(fs.existsSync(tmpBackupFile), 'Backup file must exist');
-    const decompressed = zlib.gunzipSync(fs.readFileSync(tmpBackupFile)).toString('utf-8');
+    const fileBytes = await readFile(tmpBackupFile);
+    const decompressed = zlib.gunzipSync(fileBytes).toString('utf-8');
     const fileLines = decompressed.trim().split('\n');
     assert.equal(fileLines.length, DOC_COUNT * 2, 'File should have header + source for every doc');
 
@@ -211,9 +211,9 @@ async function runTest() {
     console.log(`🎉 E2E MOCK TEST PASSED SUCCESSFULLY!\n`);
   } finally {
     server.close();
-    if (fs.existsSync(tmpBackupFile)) {
-      fs.unlinkSync(tmpBackupFile);
-    }
+    try {
+      await unlink(tmpBackupFile);
+    } catch {}
   }
 }
 

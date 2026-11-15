@@ -1,22 +1,22 @@
 const { test, describe, afterEach } = require('node:test');
 const assert = require('node:assert/strict');
-const fs = require('fs');
-const path = require('path');
-const { pipeline } = require('stream/promises');
+const { readFile, rm } = require('node:fs/promises');
+const path = require('node:path');
+const { pipeline } = require('node:stream/promises');
 
 const { ElasticsearchSourceStream } = require('../lib/streams/ElasticsearchSourceStream');
 const { DocumentTransformStream } = require('../lib/streams/DocumentTransformStream');
 const { ElasticsearchTargetStream } = require('../lib/streams/ElasticsearchTargetStream');
 const { FileTargetStream } = require('../lib/streams/FileTargetStream');
-const { MultiWritableStream } = require('../lib/transfer');
+const { MultiWritableStream } = require('../lib/streams/MultiWritableStream');
 
-const TMP_DIR = path.join(__dirname, 'tmp');
+const TMP_DIR = path.join(__dirname, 'tmp_pipeline');
 
 describe('Full Pipeline Integration', () => {
-  afterEach(() => {
-    if (fs.existsSync(TMP_DIR)) {
-      fs.rmSync(TMP_DIR, { recursive: true, force: true });
-    }
+  afterEach(async () => {
+    try {
+      await rm(TMP_DIR, { recursive: true, force: true });
+    } catch {}
   });
 
   test('streams from source through transform to multiple targets with backpressure', async () => {
@@ -113,8 +113,8 @@ describe('Full Pipeline Integration', () => {
     assert.equal(targetIndexed[9].body.doubled, 20);
 
     // Verify File target received all 10 documents
-    assert.ok(fs.existsSync(filePath));
-    const lines = fs.readFileSync(filePath, 'utf-8').trim().split('\n');
+    const content = await readFile(filePath, 'utf-8');
+    const lines = content.trim().split('\n');
     assert.equal(lines.length, 20); // 10 action lines + 10 source lines
   });
 });
