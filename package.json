@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "description": "High-performance stream pipeline to transfer documents between Elasticsearch / OpenSearch instances or backup to NDJSON files.",
   "main": "index.js",
+  "types": "index.d.ts",
   "bin": {
     "elasticsearch-document-transfer": "bin/cli.js",
     "es-transfer": "bin/cli.js"
@@ -11,6 +12,7 @@
     "bin/",
     "lib/",
     "index.js",
+    "index.d.ts",
     "config-sample.json",
     "config-sample.js"
   ],

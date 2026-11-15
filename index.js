@@ -7,7 +7,7 @@ const { DocumentTransformStream } = require('./lib/streams/DocumentTransformStre
 const { createPipeline } = require('./lib/pipeline/pipelineFactory');
 const { createClient, pingClient } = require('./lib/client/clientFactory');
 const { transferMapping, sanitizeMapping } = require('./lib/mapping/mappingManager');
-const { loadConfigFile, normalizeConfig } = require('./lib/config');
+const { loadConfigFile, normalizeConfig, resolveConfig } = require('./lib/config');
 
 // If executed directly via `node index.js`
 if (require.main === module) {
@@ -34,6 +34,7 @@ module.exports = {
   sanitizeMapping,
   loadConfigFile,
   normalizeConfig,
+  resolveConfig,
   ElasticsearchSourceStream,
   ElasticsearchTargetStream,
   FileTargetStream,

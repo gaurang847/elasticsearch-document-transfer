@@ -1,14 +1,6 @@
 /**
- * @typedef {Object} CliOptionDefinition
- * @property {string} flags - Option flag signature (e.g. '-c, --config <path>')
- * @property {string} description - Option description for help menu
- * @property {string|number|boolean} [defaultValue] - Default value if not specified
- * @property {Function} [coerce] - Coercion function (e.g. parseInt)
- */
-
-/**
  * Modular CLI option definitions for elasticsearch-document-transfer.
- * @type {CliOptionDefinition[]}
+ * @type {import('../lib/types').CliOptionDefinition[]}
  */
 const cliOptions = [
   {
