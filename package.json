@@ -42,7 +42,7 @@
     "bulk"
   ],
   "author": "Gaurang Pansare",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/masquerade817/elasticsearch-document-transfer/issues"
   },

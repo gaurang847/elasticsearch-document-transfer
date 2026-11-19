@@ -1,10 +1,25 @@
 # elasticsearch-document-transfer
 [![npm version](https://badge.fury.io/js/elasticsearch-document-transfer.svg)](https://badge.fury.io/js/elasticsearch-document-transfer)
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A modern, high-performance, stream-based data transfer and backup pipeline for **Elasticsearch (7.x, 8.x, 9.x)** and **OpenSearch (1.x, 2.x)**.
 
 Stream documents between clusters, sync indices, or dump/restore data to NDJSON / JSONL files with native Node.js stream backpressure, zero buffer bloat, and automatic cursor cleanup.
+
+---
+
+## 📑 Table of Contents
+* [Why This Project?](#-why-this-project)
+* [Key Features](#-key-features)
+* [Installation](#-installation)
+* [Quick Start](#-quick-start)
+  * [1. CLI with Config File](#1-using-cli-with-a-config-file)
+  * [2. CLI with Flags](#2-using-cli-flags-quick-transfer)
+  * [3. Programmatic API](#3-programmatic-api)
+* [Configuration Reference](#️-configuration-reference)
+* [Rules of Thumb (Batch Size & Cursor Mode)](#-rules-of-thumb-setting-batchsize-and-cursormode)
+* [Testing](#-testing)
+* [License](#-license)
 
 ---
 
@@ -201,4 +216,4 @@ npm test
 
 ## 📄 License
 
-ISC © [Gaurang Pansare](https://github.com/masquerade817)
+MIT © [Gaurang Pansare](https://github.com/masquerade817)
