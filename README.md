@@ -8,6 +8,21 @@ Stream documents between clusters, sync indices, or dump/restore data to NDJSON 
 
 ---
 
+## 📑 Table of Contents
+* [Why This Project?](#-why-this-project)
+* [Key Features](#-key-features)
+* [Installation](#-installation)
+* [Quick Start](#-quick-start)
+  * [1. CLI with Config File](#1-using-cli-with-a-config-file)
+  * [2. CLI with Flags](#2-using-cli-flags-quick-transfer)
+  * [3. Programmatic API](#3-programmatic-api)
+* [Configuration Reference](#️-configuration-reference)
+* [Rules of Thumb (Batch Size & Cursor Mode)](#-rules-of-thumb-setting-batchsize-and-cursormode)
+* [Testing](#-testing)
+* [License](#-license)
+
+---
+
 ## 🌟 Why This Project?
 
 Elasticsearch indices are immutable when modifying existing field types (e.g. changing from `text` to `keyword`, altering analyzers). Re-indexing is mandatory.
