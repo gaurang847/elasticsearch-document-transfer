@@ -1,6 +1,6 @@
 # elasticsearch-document-transfer
 [![npm version](https://badge.fury.io/js/elasticsearch-document-transfer.svg)](https://badge.fury.io/js/elasticsearch-document-transfer)
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A modern, high-performance, stream-based data transfer and backup pipeline for **Elasticsearch (7.x, 8.x, 9.x)** and **OpenSearch (1.x, 2.x)**.
 
@@ -216,4 +216,4 @@ npm test
 
 ## 📄 License
 
-ISC © [Gaurang Pansare](https://github.com/masquerade817)
+MIT © [Gaurang Pansare](https://github.com/masquerade817)
